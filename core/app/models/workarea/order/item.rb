@@ -153,7 +153,7 @@ module Workarea
     # see whether we should merge items that have the
     # same SKU but different customizations.
     #
-    # @param test [Order::Item]
+    # @param [Hash] test
     # @return [Boolean]
     #
     def customizations_eql?(test)
@@ -164,6 +164,23 @@ module Workarea
         end
       else
         test.blank? && customizations.blank?
+      end
+    end
+
+    # Determine whether the additional fields on this item are
+    # equivalent to the passed-in Hash of parameters. Uses the
+    # `distinct_order_item_attributes` configuration setting to filter
+    # down which parameters it will be checking equivalence on.
+    #
+    # @param [Hash] params - Updated order item parameters.
+    # @return [Boolean] whether this item's attributes is equal to the
+    #                   passed-in parameters.
+    def attributes_eql?(params = {})
+      equivs = Workarea.config.distinct_order_item_attributes.map(&:to_sym)
+      attrs = params&.symbolize_keys&.slice(*equivs)
+
+      equivs.blank? || params.blank? || attrs.all? do |attribute, value|
+        self[attribute] == value
       end
     end
   end

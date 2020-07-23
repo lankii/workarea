@@ -1321,6 +1321,13 @@ module Workarea
         cvv
         amount
       ]
+
+      # This is the Array of Symbols used to determine whether
+      # `Order#add_item` will create a new `Order::Item` record or
+      # whether it will update an existing one. Attributes from
+      # `Catalog::Customizations` are always included in this existing
+      # item check, so they are not included here.
+      config.distinct_order_item_attributes = []
     end
   end
 end
