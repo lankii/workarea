@@ -221,7 +221,9 @@ module Workarea
       customizations = attributes[:customizations]
 
       if existing_item = items.find_existing(sku, customizations)
-        update_item(existing_item.id, quantity: existing_item.quantity + quantity)
+        attributes[:quantity] = existing_item.quantity + quantity
+
+        update_item(existing_item.id, attributes)
       else
         items.build(attributes)
       end

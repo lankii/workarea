@@ -1,6 +1,12 @@
 require 'test_helper'
 
 module Workarea
+  decorate Order::Item, with: :workarea_order_test do
+    decorated do
+      field :custom, type: String
+    end
+  end
+
   class OrderTest < TestCase
     def test_quantity
       order = Order.new
@@ -82,6 +88,11 @@ module Workarea
       order.add_item(product_id: '1234', sku: 'SKU', quantity: 2)
       assert_equal(1, order.items.count)
       assert_equal(4, order.items.last.quantity)
+
+      order.add_item(product_id: '1234', sku: 'SKU', quantity: 1, custom: 'foo')
+      assert_equal(1, order.items.count)
+      assert_equal(5, order.items.last.quantity)
+      assert_equal('foo', order.items.last.custom)
     end
 
     def test_update_item
